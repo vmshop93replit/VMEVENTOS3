@@ -96,7 +96,12 @@ function ProtectedRoute({
   const [location] = useLocation();
 
   // Debug: verificar se o usuário está sendo carregado corretamente
-  console.log("ProtectedRoute - user:", user, "isLoading:", isLoading);
+  console.log("🔍 ProtectedRoute Debug:", { 
+    user, 
+    isLoading, 
+    localStorage: localStorage.getItem('vm-eventos-user'),
+    path: location 
+  });
 
   return (
     <Route path={path}>
@@ -113,11 +118,11 @@ function ProtectedRoute({
         }
 
         if (!user) {
-          console.log("ProtectedRoute - No user, redirecting to /auth");
+          console.log("❌ ProtectedRoute - No user found, redirecting to /auth");
           return <Redirect to="/auth" />;
         }
 
-        console.log("ProtectedRoute - User authenticated, rendering component");
+        console.log("✅ ProtectedRoute - User authenticated, rendering component");
         return <Component />;
       }}
     </Route>

@@ -13,7 +13,7 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  // For deployed environments (including Vercel), use Supabase directly
+  // Sempre usar Supabase para deployed environments
   if (typeof window !== 'undefined' && !window.location.hostname.includes('replit')) {
     return await handleSupabaseAPI(method, url, data);
   }
@@ -96,42 +96,46 @@ export const getQueryFn: <T>(options: {
   async ({ queryKey }) => {
     const url = queryKey[0] as string;
     
-    // For deployed environments (including Vercel), use Supabase directly
-    if (typeof window !== 'undefined' && !window.location.hostname.includes('replit')) {
-      console.log(`🔍 Supabase Query: ${url}`);
-      
-      if (url.includes('/api/contacts')) {
-        return await supabaseAPI.getContacts();
-      }
-      if (url.includes('/api/user')) {
-        try {
-          const user = await supabaseAPI.getUser();
-          console.log('✅ Usuário autenticado via Supabase:', user);
-          return user;
-        } catch (error) {
-          console.log('❌ Falha na autenticação Supabase:', error);
-          if (unauthorizedBehavior === "returnNull") return null;
-          throw error;
-        }
-      }
-      if (url.includes('/api/page-visits/stats')) {
-        return await supabaseAPI.getVisitStats();
-      }
-      if (url.includes('/api/page-visits')) {
-        return await supabaseAPI.getVisits();
+    // Sempre usar Supabase (tanto local quanto deployed)
+    console.log(`🔍 Query: ${url} (hostname: ${window?.location?.hostname})`);
+    
+    if (url.includes('/api/contacts')) {
+      return await supabaseAPI.getContacts();
+    }
+    if (url.includes('/api/user')) {
+      try {
+        const user = await supabaseAPI.getUser();
+        console.log('✅ Usuário autenticado:', user);
+        return user;
+      } catch (error) {
+        console.log('❌ Falha na autenticação:', error);
+        if (unauthorizedBehavior === "returnNull") return null;
+        throw error;
       }
     }
-
-    const res = await fetch(url, {
-      credentials: "include",
-    });
-
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
+    if (url.includes('/api/page-visits/stats')) {
+      return await supabaseAPI.getVisitStats();
     }
+    if (url.includes('/api/page-visits')) {
+      return await supabaseAPI.getVisits();
+    }
+    
+    // Se for Replit, usar API backend
+    if (typeof window !== 'undefined' && window.location.hostname.includes('replit')) {
+      const res = await fetch(url, {
+        credentials: "include",
+      });
 
-    await throwIfResNotOk(res);
-    return await res.json();
+      if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+        return null;
+      }
+
+      await throwIfResNotOk(res);
+      return await res.json();
+    }
+    
+    // Fallback para outros casos
+    throw new Error(`Query não suportada: ${url}`);
   };
 
 export const queryClient = new QueryClient({
