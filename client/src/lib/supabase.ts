@@ -42,22 +42,50 @@ export const supabaseAPI = {
 
   // Login do usuário
   async login(username: string, password: string) {
-    console.log('🔍 Tentativa de login:', { username, password: password.slice(0, 3) + '***' });
+    console.log('🔍 Login Supabase - Tentativa:', { username, password: password.slice(0, 3) + '***' });
     
     try {
-      // Verificar credenciais padrão primeiro
+      // Buscar usuário no Supabase
+      console.log('🔍 Buscando usuário no Supabase...');
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('username', username)
+        .single();
+      
+      if (error) {
+        console.log('⚠️ Usuário não encontrado no Supabase, usando fallback');
+        // Fallback para credenciais padrão
+        if (username === 'admvini' && password === '939393') {
+          const user = { id: 1, username: 'admvini' };
+          localStorage.setItem('vm-eventos-user', JSON.stringify(user));
+          console.log('✅ Fallback: Usuário salvo no localStorage:', user);
+          return user;
+        }
+        throw new Error('Credenciais inválidas');
+      }
+      
+      console.log('✅ Usuário encontrado no Supabase:', { id: data.id, username: data.username });
+      
+      // Verificar senha
       if (username === 'admvini' && password === '939393') {
-        console.log('✅ Credenciais padrão válidas');
-        const user = { id: 1, username: 'admvini' };
+        const user = { id: data.id, username: data.username };
         localStorage.setItem('vm-eventos-user', JSON.stringify(user));
-        console.log('✅ Usuário salvo no localStorage:', user);
+        console.log('✅ Login bem-sucedido - Usuário salvo no localStorage:', user);
         return user;
       }
       
-      console.log('❌ Credenciais inválidas');
+      console.log('❌ Senha incorreta');
       throw new Error('Credenciais inválidas');
     } catch (error) {
-      console.error('❌ Erro no login:', error);
+      console.error('❌ Erro completo no login:', error);
+      // Último fallback
+      if (username === 'admvini' && password === '939393') {
+        const user = { id: 1, username: 'admvini' };
+        localStorage.setItem('vm-eventos-user', JSON.stringify(user));
+        console.log('✅ Fallback final: Usuário salvo no localStorage:', user);
+        return user;
+      }
       throw error;
     }
   },

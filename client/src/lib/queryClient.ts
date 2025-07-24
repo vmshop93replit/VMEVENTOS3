@@ -46,10 +46,12 @@ async function handleSupabaseAPI(method: string, url: string, data?: unknown): P
   if (url.includes('/api/login') && method === 'POST') {
     const { username, password } = data as any;
     try {
+      console.log('🔄 Processando login no frontend:', { username });
       const user = await supabaseAPI.login(username, password);
+      console.log('✅ Login processado, retornando:', user);
       return new Response(JSON.stringify(user), { status: 200 });
     } catch (error) {
-      console.error('Erro no login:', error);
+      console.error('❌ Erro no login frontend:', error);
       return new Response(JSON.stringify({ error: 'Invalid credentials' }), { status: 401 });
     }
   }

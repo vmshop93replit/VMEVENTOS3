@@ -50,19 +50,31 @@ export default function AuthPage() {
     },
     onSuccess: (data) => {
       console.log('🎉 Login mutation success:', data);
+      
+      // Verificar se o localStorage foi configurado
+      const savedUser = localStorage.getItem('vm-eventos-user');
+      console.log('🔍 Verificando localStorage após login:', savedUser);
+      
+      if (!savedUser) {
+        console.log('⚠️ localStorage vazio, configurando manualmente');
+        const user = { id: data.id || 1, username: data.username || 'admvini' };
+        localStorage.setItem('vm-eventos-user', JSON.stringify(user));
+        console.log('✅ Usuário configurado manualmente no localStorage:', user);
+      }
+      
       // Invalidar cache para recarregar dados de usuário
       queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-      
-      // Aguardar um pouco antes de redirecionar
-      setTimeout(() => {
-        console.log('🔄 Redirecionando para /admin');
-        window.location.href = "/admin";
-      }, 500);
       
       toast({
         title: "Login realizado com sucesso",
         description: "Bem-vindo ao painel administrativo",
       });
+      
+      // Aguardar um pouco antes de redirecionar
+      setTimeout(() => {
+        console.log('🔄 Redirecionando para /admin');
+        window.location.href = "/admin";
+      }, 1000);
     },
     onError: (error: any) => {
       console.error('❌ Login mutation error:', error);
