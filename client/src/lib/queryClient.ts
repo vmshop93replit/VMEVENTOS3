@@ -33,7 +33,7 @@ async function handleLocalStorageAPI(method: string, url: string, data?: unknown
   if (url.includes('/api/contact') && method === 'POST') {
     const contacts = JSON.parse(localStorage.getItem('vm-eventos-contacts') || '[]');
     const newContact = {
-      ...(data as object),
+      ...data,
       id: Date.now(),
       created_at: new Date().toISOString()
     };
@@ -60,7 +60,7 @@ async function handleLocalStorageAPI(method: string, url: string, data?: unknown
   if (url.includes('/api/page-visit') && method === 'POST') {
     const visits = JSON.parse(localStorage.getItem('vm-eventos-visits') || '[]');
     const newVisit = {
-      ...(data as object),
+      ...data,
       id: Date.now(),
       visited_at: new Date().toISOString()
     };
