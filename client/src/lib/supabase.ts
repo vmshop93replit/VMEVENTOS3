@@ -131,6 +131,11 @@ export const supabaseAPI = {
     };
   },
 
+  // Criar contato (alias para addContact)
+  async createContact(contact: any) {
+    return this.addContact(contact);
+  },
+
   // Adicionar novo contato
   async addContact(contact: any) {
     const { data, error } = await supabase
@@ -152,6 +157,11 @@ export const supabaseAPI = {
     return data;
   },
 
+  // Criar visita de página (alias para recordPageVisit)
+  async createPageVisit(pageData: any) {
+    return this.recordPageVisit(pageData);
+  },
+
   // Registrar visita de página
   async recordPageVisit(pageData: any) {
     const { data, error } = await supabase
@@ -170,5 +180,20 @@ export const supabaseAPI = {
     }
     
     return data;
+  },
+
+  // Buscar todas as visitas
+  async getVisits() {
+    const { data, error } = await supabase
+      .from('page_visits')
+      .select('*')
+      .order('visited_at', { ascending: false });
+    
+    if (error) {
+      console.error('Erro ao buscar visitas:', error);
+      return [];
+    }
+    
+    return data || [];
   }
 };

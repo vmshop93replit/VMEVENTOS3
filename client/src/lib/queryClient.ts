@@ -13,9 +13,9 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  // For deployed environments without backend, use localStorage
+  // For deployed environments (including Vercel), use Supabase directly
   if (typeof window !== 'undefined' && !window.location.hostname.includes('replit')) {
-    return await handleLocalStorageAPI(method, url, data);
+    return await handleSupabaseAPI(method, url, data);
   }
 
   const res = await fetch(url, {
@@ -29,13 +29,16 @@ export async function apiRequest(
   return res;
 }
 
-async function handleLocalStorageAPI(method: string, url: string, data?: unknown): Promise<Response> {
-  // Use Supabase directly for deployed environments
+async function handleSupabaseAPI(method: string, url: string, data?: unknown): Promise<Response> {
+  // Use Supabase directly for all operations in deployed environments
+  console.log(`🔄 Supabase API: ${method} ${url}`);
+  
   if (url.includes('/api/contact') && method === 'POST') {
     try {
-      const result = await supabaseAPI.addContact(data);
+      const result = await supabaseAPI.createContact(data);
       return new Response(JSON.stringify(result), { status: 201 });
     } catch (error) {
+      console.error('Erro ao criar contato:', error);
       return new Response(JSON.stringify({ error: 'Failed to add contact' }), { status: 500 });
     }
   }
@@ -46,6 +49,7 @@ async function handleLocalStorageAPI(method: string, url: string, data?: unknown
       const user = await supabaseAPI.login(username, password);
       return new Response(JSON.stringify(user), { status: 200 });
     } catch (error) {
+      console.error('Erro no login:', error);
       return new Response(JSON.stringify({ error: 'Invalid credentials' }), { status: 401 });
     }
   }
@@ -61,9 +65,10 @@ async function handleLocalStorageAPI(method: string, url: string, data?: unknown
   
   if (url.includes('/api/page-visit') && method === 'POST') {
     try {
-      const result = await supabaseAPI.recordPageVisit(data);
+      const result = await supabaseAPI.createPageVisit(data);
       return new Response(JSON.stringify(result), { status: 201 });
     } catch (error) {
+      console.error('Erro ao registrar visita:', error);
       return new Response(JSON.stringify({ error: 'Failed to record visit' }), { status: 500 });
     }
   }
@@ -75,6 +80,7 @@ async function handleLocalStorageAPI(method: string, url: string, data?: unknown
       const result = await supabaseAPI.deleteContact(contactId);
       return new Response(JSON.stringify(result), { status: 200 });
     } catch (error) {
+      console.error('Erro ao deletar contato:', error);
       return new Response(JSON.stringify({ error: 'Failed to delete contact' }), { status: 500 });
     }
   }
@@ -90,8 +96,10 @@ export const getQueryFn: <T>(options: {
   async ({ queryKey }) => {
     const url = queryKey[0] as string;
     
-    // For deployed environments, use Supabase directly
+    // For deployed environments (including Vercel), use Supabase directly
     if (typeof window !== 'undefined' && !window.location.hostname.includes('replit')) {
+      console.log(`🔍 Supabase Query: ${url}`);
+      
       if (url.includes('/api/contacts')) {
         return await supabaseAPI.getContacts();
       }
@@ -107,8 +115,7 @@ export const getQueryFn: <T>(options: {
         return await supabaseAPI.getVisitStats();
       }
       if (url.includes('/api/page-visits')) {
-        const { data, error } = await import('./supabase').then(m => m.supabase.from('page_visits').select('*').order('visited_at', { ascending: false }));
-        return data || [];
+        return await supabaseAPI.getVisits();
       }
     }
 
