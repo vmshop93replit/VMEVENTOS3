@@ -24,7 +24,7 @@ export const db = {
   // Queries para compatibilidade com query.table.method
   query: {
     users: {
-      findFirst: async (options: any) => {
+      findFirst: async (options?: any) => {
         try {
           const whereField = options?.where;
           let query = supabase.from('users').select('*');

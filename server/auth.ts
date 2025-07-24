@@ -130,8 +130,8 @@ async function getUser(id: number) {
 }
 
 async function createUser(userData: { username: string; password: string }) {
-  const [user] = await db.insert(users).values(userData).returning();
-  return user;
+  const result = await db.insert(users).values(userData).returning().execute();
+  return result[0];
 }
 
 export function setupAuth(app: Express) {
