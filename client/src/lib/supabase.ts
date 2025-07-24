@@ -31,9 +31,13 @@ export const supabaseAPI = {
     // Verificar se existe usuário logado no localStorage
     const user = localStorage.getItem('vm-eventos-user');
     if (!user) {
+      console.log('🔍 Nenhum usuário no localStorage');
       throw new Error('Não autenticado');
     }
-    return JSON.parse(user);
+    
+    const userData = JSON.parse(user);
+    console.log('✅ Usuário encontrado no localStorage:', userData);
+    return userData;
   },
 
   // Login do usuário

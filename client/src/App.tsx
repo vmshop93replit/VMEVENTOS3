@@ -34,6 +34,8 @@ function AuthProvider({ children }: { children: ReactNode }) {
   } = useQuery<User>({
     queryKey: ["/api/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
+    staleTime: 0,
+    refetchOnMount: true,
   });
 
   const logoutMutation = useMutation({

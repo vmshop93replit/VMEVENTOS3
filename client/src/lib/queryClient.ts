@@ -105,8 +105,11 @@ export const getQueryFn: <T>(options: {
       }
       if (url.includes('/api/user')) {
         try {
-          return await supabaseAPI.getUser();
+          const user = await supabaseAPI.getUser();
+          console.log('✅ Usuário autenticado via Supabase:', user);
+          return user;
         } catch (error) {
+          console.log('❌ Falha na autenticação Supabase:', error);
           if (unauthorizedBehavior === "returnNull") return null;
           throw error;
         }
