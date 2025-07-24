@@ -128,4 +128,7 @@ A cutting-edge event services platform for VM Eventos that transforms event disc
 - Server runs on port 5000
 
 ## User Preferences
-None specified yet.
+- Criar guias detalhados e reutilizáveis para futuras implementações
+- Focar em soluções que economizem prompts e tempo de desenvolvimento
+- Preferência por integrações robustas com Supabase
+- Documentação completa para replicabilidade em outros projetos
