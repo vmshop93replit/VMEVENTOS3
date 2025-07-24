@@ -63,6 +63,9 @@ A cutting-edge event services platform for VM Eventos that transforms event disc
 - ✅ **LIMPEZA COMPLETA:** Removidos todos os arquivos GitHub, scripts e configurações de deploy
 - ✅ **APLICATIVO PURO:** Mantido apenas o VM Eventos funcionando no Replit
 - ✅ **FOCO LOCAL:** Projeto otimizado para desenvolvimento e uso exclusivo no Replit
+- ✅ **VERCEL DEPLOY:** Configuração corrigida para outputDirectory dist/public
+- ✅ **BUILD TESTADO:** npm run build funciona, gera arquivos em dist/public/
+- ✅ **DEPLOY PRONTO:** Instruções Vercel atualizadas para funcionamento correto
 
 ## API Endpoints
 - `POST /api/contact` - Submit contact form
