@@ -92,7 +92,38 @@ export const getQueryFn: <T>(options: {
     // For deployed environments, use localStorage
     if (typeof window !== 'undefined' && !window.location.hostname.includes('replit')) {
       if (url.includes('/api/contacts')) {
-        return JSON.parse(localStorage.getItem('vm-eventos-contacts') || '[]');
+        // Inicializar dados demo se não existirem
+        let contacts = JSON.parse(localStorage.getItem('vm-eventos-contacts') || '[]');
+        if (contacts.length === 0) {
+          contacts = [
+            {
+              id: 1,
+              name: "Maria Silva",
+              phone: "(11) 99999-1234",
+              eventType: "casamento", 
+              message: "Preciso de orçamento para casamento em dezembro",
+              created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+            },
+            {
+              id: 2,
+              name: "João Santos", 
+              phone: "(11) 98888-5678",
+              eventType: "corporativo",
+              message: "Evento de fim de ano da empresa",
+              created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+            },
+            {
+              id: 3,
+              name: "Ana Costa",
+              phone: "(11) 97777-9012", 
+              eventType: "aniversario",
+              message: "Festa de 18 anos da minha filha",
+              created_at: new Date().toISOString()
+            }
+          ];
+          localStorage.setItem('vm-eventos-contacts', JSON.stringify(contacts));
+        }
+        return contacts;
       }
       if (url.includes('/api/user')) {
         const user = localStorage.getItem('vm-eventos-user');
@@ -103,13 +134,50 @@ export const getQueryFn: <T>(options: {
         return JSON.parse(user);
       }
       if (url.includes('/api/page-visits/stats')) {
-        const visits = JSON.parse(localStorage.getItem('vm-eventos-visits') || '[]');
+        // Inicializar dados demo de visitas se não existirem
+        let visits = JSON.parse(localStorage.getItem('vm-eventos-visits') || '[]');
+        if (visits.length === 0) {
+          visits = [
+            {
+              id: 1,
+              page: "/",
+              ip_address: "192.168.1.1", 
+              user_agent: "Mozilla/5.0",
+              visited_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+            },
+            {
+              id: 2,
+              page: "/admin",
+              ip_address: "192.168.1.1",
+              user_agent: "Mozilla/5.0", 
+              visited_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+            },
+            {
+              id: 3,
+              page: "/",
+              ip_address: "192.168.1.2",
+              user_agent: "Mozilla/5.0",
+              visited_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+            },
+            {
+              id: 4,
+              page: "/", 
+              ip_address: "192.168.1.3",
+              user_agent: "Mozilla/5.0",
+              visited_at: new Date().toISOString()
+            }
+          ];
+          localStorage.setItem('vm-eventos-visits', JSON.stringify(visits));
+        }
+        
+        const visitsByPageObj = visits.reduce((acc: any, visit: any) => {
+          acc[visit.page] = (acc[visit.page] || 0) + 1;
+          return acc;
+        }, {});
+        
         return {
           totalVisits: visits.length,
-          visitsByPage: visits.reduce((acc: any, visit: any) => {
-            acc[visit.page] = (acc[visit.page] || 0) + 1;
-            return acc;
-          }, {}),
+          visitsByPage: visitsByPageObj,
           recentVisits: visits.filter((v: any) => 
             new Date(v.visited_at) > new Date(Date.now() - 24 * 60 * 60 * 1000)
           ).length,

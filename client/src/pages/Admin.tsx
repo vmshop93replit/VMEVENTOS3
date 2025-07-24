@@ -55,53 +55,31 @@ export default function Admin() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Consulta à API para obter todos os contatos
+  // Consulta à API para obter todos os contatos - usa queryClient configurado
   const { 
     data: contacts, 
     isLoading, 
     isError, 
     refetch 
   } = useQuery<Contact[]>({
-    queryKey: ['/api/contacts'],
-    queryFn: async () => {
-      const response = await fetch('/api/contacts', { credentials: 'include' });
-      if (!response.ok) {
-        throw new Error('Failed to fetch contacts');
-      }
-      return response.json();
-    }
+    queryKey: ['/api/contacts']
   });
   
-  // Consulta para estatísticas de visitas
+  // Consulta para estatísticas de visitas - usa queryClient configurado
   const {
     data: visitStats,
     isLoading: isLoadingStats,
     isError: isErrorStats,
     refetch: refetchStats
   } = useQuery<VisitStats>({
-    queryKey: ['/api/page-visits/stats'],
-    queryFn: async () => {
-      const response = await fetch('/api/page-visits/stats', { credentials: 'include' });
-      if (!response.ok) {
-        throw new Error('Failed to fetch visit stats');
-      }
-      return response.json();
-    }
+    queryKey: ['/api/page-visits/stats']
   });
 
-  // Mutation para exclusão de contatos
+  // Mutation para exclusão de contatos - usa apiRequest configurado
   const deleteContactMutation = useMutation({
     mutationFn: async (contactId: number) => {
       setDeletingContactId(contactId);
-      const response = await fetch(`/api/contacts/${contactId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Falha ao excluir contato');
-      }
+      const response = await apiRequest('DELETE', `/api/contacts/${contactId}`);
       return response.json();
     },
     onSuccess: (data, contactId) => {
