@@ -279,10 +279,10 @@ export default function Admin() {
                         </tr>
                       </thead>
                       <tbody>
-                        {visitStats.visitsByPage.slice(0, 5).map((item, index) => (
+                        {Object.entries(visitStats.visitsByPage || {}).slice(0, 5).map(([page, count], index) => (
                           <tr key={index} className="border-t border-white/5">
-                            <td className="py-2 text-white capitalize">{item.page}</td>
-                            <td className="py-2 text-right text-[#4ADE80]">{item.count.toLocaleString()}</td>
+                            <td className="py-2 text-white capitalize">{page}</td>
+                            <td className="py-2 text-right text-[#4ADE80]">{count.toLocaleString()}</td>
                           </tr>
                         ))}
                       </tbody>
