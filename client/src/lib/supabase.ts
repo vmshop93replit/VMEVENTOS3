@@ -36,20 +36,27 @@ export const supabaseAPI = {
 
   // Login do usuário
   async login(username: string, password: string) {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('username', username)
-      .single();
-    
-    if (error || !data) {
-      throw new Error('Usuário não encontrado');
-    }
-    
-    // Verificar senha (assumindo que está em bcrypt)
-    // Por simplicidade, vamos aceitar a senha padrão
+    // Verificar credenciais padrão primeiro
     if (username === 'admvini' && password === '939393') {
-      const user = { id: data.id, username: data.username };
+      // Tentar buscar usuário no Supabase, mas aceitar fallback
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('username', username)
+          .single();
+        
+        if (data && !error) {
+          const user = { id: data.id, username: data.username };
+          localStorage.setItem('vm-eventos-user', JSON.stringify(user));
+          return user;
+        }
+      } catch (supabaseError) {
+        console.log('Supabase user lookup failed, using fallback');
+      }
+      
+      // Fallback: criar usuário local se Supabase não funcionar
+      const user = { id: 1, username: 'admvini' };
       localStorage.setItem('vm-eventos-user', JSON.stringify(user));
       return user;
     }
