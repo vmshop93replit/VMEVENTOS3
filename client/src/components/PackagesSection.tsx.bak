@@ -1,0 +1,490 @@
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Check, X } from "lucide-react";
+
+const packages = [
+  {
+    title: "Essencial",
+    price: "A partir de R$ 1.799",
+    features: [
+      "Bartender profissional (4h)",
+      "Caipirinhas e batidas à vontade",
+      "Estrutura básica de bar",
+      "Até 50 convidados",
+      "Pacote ajustável conforme evento",
+    ],
+    drinks: [
+      "Bebidas preparadas com Cachaça ou Vodka",
+      "CAIPIRINHAS",
+      "Limão", 
+      "Maracujá", 
+      "Morango", 
+      "Kiwi", 
+      "Abacaxi",
+      "BATIDAS",
+      "Limão",
+      "Morango",
+      "Maracujá",
+      "Abacaxi",
+      "OBSERVAÇÕES",
+      "Todos os ingredientes são frescos e de alta qualidade",
+      "Drinks podem ser servidos na versão alcoólica ou zero álcool"
+    ],
+    color: "border-gray-700 hover:border-[#C084FC]",
+    buttonColor: "from-[#C084FC] to-[#C084FC]/80 hover:from-[#C084FC] hover:to-[#C084FC]",
+    textColor: "text-[#C084FC]",
+    glowColor: "shadow-[0_0_15px_rgba(192,132,252,0.7)]",
+    popular: false,
+  },
+  {
+    title: "Premium",
+    price: "A partir de R$ 2.399",
+    features: [
+      "2 Bartenders profissionais (5h)",
+      "Caipirinhas, batidas e drinks especiais",
+      "Bar completo com iluminação",
+      "Até 50 convidados",
+      "Decoração temática",
+      "Pacote ajustável conforme evento",
+    ],
+    drinks: [
+      "Bebidas preparadas com Cachaça ou Vodka",
+      "CAIPIRINHAS",
+      "Limão",
+      "Maracujá",
+      "Morango",
+      "Kiwi",
+      "Abacaxi",
+      "BATIDAS",
+      "Limão",
+      "Morango",
+      "Maracujá",
+      "Abacaxi",
+      "DRINKS ESPECIAIS",
+      "Caip Ice (Caipirinhas com Ice)",
+      "Caip Cerva (Caipirinhas com Corona ou Heineken)",
+      "OBSERVAÇÕES",
+      "Todos os ingredientes são frescos e de alta qualidade",
+      "Drinks podem ser servidos na versão alcoólica ou zero álcool"
+    ],
+    color: "border-2 border-[#4ADE80]",
+    buttonColor: "from-[#4ADE80] to-[#4ADE80]/80 hover:from-[#4ADE80] hover:to-[#4ADE80]",
+    textColor: "text-[#4ADE80]",
+    glowColor: "shadow-[0_0_15px_rgba(74,222,128,0.7)]",
+    shadow: "shadow-[0_0_15px_rgba(74,222,128,0.7)]",
+    textButtonColor: "text-black",
+    popular: true,
+  },
+  {
+    title: "Luxo",
+    price: "A partir de R$ 3.999",
+    features: [
+      "3 Bartenders profissionais (6h)",
+      "Open bar com drinks exclusivos e shots premium",
+      "Bar temático com apresentação",
+      "Até 50 convidados",
+      "Consultoria personalizada",
+      "Pacote ajustável conforme evento",
+    ],
+    drinks: [
+      "Bebidas preparadas com Cachaça, Vodka, Jack Daniels, Tanqueray, Licor 43, Balena, energéticos e outros licores premium",
+      "CAIPIRINHAS",
+      "Limão",
+      "Maracujá",
+      "Morango",
+      "Kiwi",
+      "Abacaxi",
+      "BATIDAS",
+      "Limão",
+      "Morango",
+      "Maracujá",
+      "Abacaxi",
+      "ESPECIAIS COM JACK DANIELS",
+      "Jack Maracujá",
+      "Jack Limão",
+      "Jack Maçã Verde com Kiwi",
+      "DRINKS COM LICOR 43",
+      "43 Limão (Licor e limão)",
+      "43 Maracujá (Licor e maracujá)",
+      "43 Abacaxi (Licor, abacaxi e limão)",
+      "43 Cerva (Licor, limão e Corona ou Heineken)",
+      "Refresco (Licor 43, limão e laranja)",
+      "Summer (Licor 43, morango e pêssego)",
+      "Barbie (Licor Balena e Red Bull frutas vermelhas)",
+      "SHOTS GOURMET (50ml)",
+      "Licor 43 Tradicional",
+      "Licor 43 Chocolate",
+      "Licor 43 Creme Brûlée",
+      "Licor 43 Chocolate com Creme Brûlée",
+      "Balena",
+      "Balena com Licor 43 Chocolate",
+      "OBSERVAÇÕES",
+      "Todos os ingredientes são frescos e de alta qualidade",
+      "Drinks podem ser servidos na versão alcoólica ou zero álcool"
+    ],
+    color: "border-gray-700 hover:border-[#C084FC]",
+    buttonColor: "from-[#C084FC] to-[#C084FC]/80 hover:from-[#C084FC] hover:to-[#C084FC]",
+    textColor: "text-[#C084FC]",
+    glowColor: "shadow-[0_0_15px_rgba(192,132,252,0.7)]",
+    popular: false,
+  },
+];
+
+export default function PackagesSection() {
+  const [selectedPlan, setSelectedPlan] = useState<number | null>(null);
+  
+  const openModal = (index: number) => {
+    setSelectedPlan(index);
+  };
+  
+  const closeModal = () => {
+    setSelectedPlan(null);
+  };
+  
+  return (
+    <section id="packages" className="py-20 bg-black relative overflow-hidden">
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#C084FC] opacity-10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-[#4ADE80] opacity-10 rounded-full blur-3xl"></div>
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl md:text-5xl font-orbitron font-bold mb-4 text-shadow-green">
+            <span className="bg-gradient-to-r from-[#4ADE80] to-[#C084FC] bg-clip-text text-transparent">
+              Nossos Pacotes
+            </span>
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-[#4ADE80] to-[#C084FC] mx-auto"></div>
+          <p className="text-gray-300 mt-6 max-w-3xl mx-auto">
+            Escolha o pacote ideal para o seu evento e surpreenda seus convidados com uma experiência única.
+          </p>
+          <div className="text-gray-400 mt-4 max-w-3xl mx-auto text-sm px-4">
+            <p className="mb-3">
+              Todos os nossos pacotes utilizam copos de 500ml e oferecem uma média de 4 drinks por pessoa, variando naturalmente de acordo com o perfil do público — alguns convidados consomem mais, outros menos.
+            </p>
+            <p>
+              Os pacotes são flexíveis e podem ser ajustados conforme a necessidade e o orçamento do evento, garantindo sempre a melhor experiência possível.
+            </p>
+          </div>
+        </motion.div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          {packages.map((pkg, index) => (
+            <motion.div
+              key={index}
+              className={`rounded-lg glassmorphism ${pkg.color} relative transition-all duration-300 ${pkg.shadow || ""} ${pkg.popular ? "transform scale-105 z-10" : ""}`}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
+              whileHover={{ y: -10 }}
+            >
+              {pkg.popular && (
+                <div className="absolute -top-4 left-0 right-0 text-center">
+                  <span className="bg-[#4ADE80] text-black px-4 py-1 rounded-full text-sm font-bold">
+                    MAIS POPULAR
+                  </span>
+                </div>
+              )}
+              <div className="p-6 border-b border-gray-700">
+                <h3 className="text-2xl font-bold text-white mb-2">{pkg.title}</h3>
+                <p className={`${pkg.textColor} font-semibold`}>{pkg.price}</p>
+              </div>
+              <div className="p-6">
+                <ul className="space-y-3">
+                  {pkg.features.map((feature, i) => (
+                    <li key={i} className="flex items-start">
+                      <Check className={`h-5 w-5 ${pkg.textColor} mt-1 mr-2 flex-shrink-0`} />
+                      <span className="text-gray-300">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-8 space-y-3">
+                  <motion.button
+                    onClick={() => openModal(index)}
+                    className={`w-full text-center py-3 px-6 bg-black border-2 ${pkg.color.includes('border-2') ? pkg.color.replace('border-2', '') : pkg.color.replace('border-gray-700', 'border-gray-700').replace('hover:border-[#C084FC]', '')} ${pkg.textColor} font-bold rounded-lg transition-all focus:outline-none`}
+                    whileHover={{ 
+                      boxShadow: pkg.textColor.includes('4ADE80') 
+                        ? '0 0 15px rgba(74, 222, 128, 0.7)' 
+                        : '0 0 15px rgba(192, 132, 252, 0.7)',
+                      scale: 1.02
+                    }}
+                  >
+                    Ver Drinks
+                  </motion.button>
+                  
+                  <a
+                    href="#contact"
+                    className={`block text-center py-3 px-6 bg-gradient-to-r ${pkg.buttonColor} ${pkg.textButtonColor || 'text-white'} font-bold rounded-lg transition-all`}
+                  >
+                    Solicitar Orçamento
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+      
+      {/* Modal para exibir os drinks */}
+      <AnimatePresence>
+        {selectedPlan !== null && (
+          <motion.div 
+            className="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeModal}
+          >
+            <motion.div 
+              className="max-w-2xl w-full max-h-[85vh] bg-gradient-to-b from-black/95 to-black/90 border border-gray-800 rounded-2xl overflow-hidden flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ type: "spring", damping: 25 }}
+              style={{ 
+                boxShadow: packages[selectedPlan].textColor.includes('4ADE80') 
+                  ? '0 0 35px rgba(74, 222, 128, 0.5)' 
+                  : '0 0 35px rgba(192, 132, 252, 0.5)' 
+              }}
+            >
+              {/* Header com gradiente e ícone de bebida */}
+              <div 
+                className="py-8 px-6 border-b border-gray-800 flex justify-between items-center flex-shrink-0 relative"
+                style={{
+                  background: packages[selectedPlan].textColor.includes('4ADE80')
+                    ? 'linear-gradient(to right, rgba(0,0,0,0.8), rgba(74, 222, 128, 0.1))'
+                    : 'linear-gradient(to right, rgba(0,0,0,0.8), rgba(192, 132, 252, 0.1))'
+                }}
+              >
+                {/* Círculo decorativo */}
+                <div 
+                  className="absolute w-40 h-40 rounded-full opacity-10 -top-20 -right-20"
+                  style={{
+                    background: packages[selectedPlan].textColor.includes('4ADE80')
+                      ? 'radial-gradient(circle, rgba(74, 222, 128, 0.8) 0%, rgba(0,0,0,0) 70%)'
+                      : 'radial-gradient(circle, rgba(192, 132, 252, 0.8) 0%, rgba(0,0,0,0) 70%)'
+                  }}
+                ></div>
+                
+                <div className="flex flex-col">
+                  <span className={`text-sm uppercase tracking-wider ${packages[selectedPlan].textColor} font-medium`}>
+                    {packages[selectedPlan].title === "Essencial" ? "✅ Plano Essencial" : 
+                     packages[selectedPlan].title === "Premium" ? "🌟 Plano Premium" : 
+                     "💎 Plano Luxo"}
+                  </span>
+                  <h3 className="text-3xl font-bold text-white mt-1">
+                    Drinks do Plano {packages[selectedPlan].title}
+                  </h3>
+                </div>
+                
+                <button 
+                  onClick={closeModal}
+                  className="text-gray-400 hover:text-white transition-colors focus:outline-none z-10 bg-black/30 rounded-full p-1"
+                >
+                  <X size={28} />
+                </button>
+              </div>
+              
+              {/* Conteúdo com duas colunas para listas maiores */}
+              <div className="p-8 overflow-y-auto custom-scrollbar flex-grow">
+                {packages[selectedPlan].title === "Luxo" ? (
+                  // Layout para o plano Luxo com muitos itens - 2 colunas
+                  <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-2">
+                      <div className="col-span-2 mb-6">
+                        <p className={`text-xl ${packages[selectedPlan].textColor} font-medium mb-4 border-b border-gray-800 pb-2`}>
+                          {packages[selectedPlan].drinks[0]}
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className={`text-lg ${packages[selectedPlan].textColor} font-medium mb-3 border-b border-gray-800 pb-1`}>
+                          Clássicos
+                        </p>
+                        <ul className="space-y-3 mb-6">
+                          {packages[selectedPlan].drinks.slice(1, 11).map((drink, i) => (
+                            <motion.li 
+                              key={i} 
+                              className="flex items-center"
+                              initial={{ x: -10, opacity: 0 }}
+                              animate={{ x: 0, opacity: 1 }}
+                              transition={{ delay: i * 0.03 }}
+                            >
+                              <div className={`h-2 w-2 rounded-full ${packages[selectedPlan].textColor} mr-3 flex-shrink-0`}></div>
+                              <span className="text-gray-100 text-base">{drink}</span>
+                            </motion.li>
+                          ))}
+                        </ul>
+                        
+                        <p className={`text-lg ${packages[selectedPlan].textColor} font-medium mb-3 border-b border-gray-800 pb-1`}>
+                          Drinks Especiais
+                        </p>
+                        <ul className="space-y-3">
+                          {packages[selectedPlan].drinks.slice(11, 15).map((drink, i) => (
+                            <motion.li 
+                              key={i} 
+                              className="flex items-center"
+                              initial={{ x: -10, opacity: 0 }}
+                              animate={{ x: 0, opacity: 1 }}
+                              transition={{ delay: i * 0.03 + 0.3 }}
+                            >
+                              <div className={`h-2.5 w-2.5 rotate-45 ${packages[selectedPlan].textColor} mr-3 flex-shrink-0`}></div>
+                              <span className="text-gray-100 text-base">{drink}</span>
+                            </motion.li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <p className={`text-lg ${packages[selectedPlan].textColor} font-medium mb-3 border-b border-gray-800 pb-1`}>
+                          Drinks com Licor 43
+                        </p>
+                        <ul className="space-y-3 mb-6">
+                          {packages[selectedPlan].drinks.slice(15, 24).map((drink, i) => (
+                            <motion.li 
+                              key={i} 
+                              className="flex items-center"
+                              initial={{ x: -10, opacity: 0 }}
+                              animate={{ x: 0, opacity: 1 }}
+                              transition={{ delay: i * 0.03 + 0.5 }}
+                            >
+                              <div className={`h-2 w-2 rounded-full ${packages[selectedPlan].textColor} mr-3 flex-shrink-0`}></div>
+                              <span className="text-gray-100 text-base">{drink}</span>
+                            </motion.li>
+                          ))}
+                        </ul>
+                        
+                        <p className={`text-lg ${packages[selectedPlan].textColor} font-medium mb-3 border-b border-gray-800 pb-1`}>
+                          Shots Gourmet
+                        </p>
+                        <ul className="space-y-3">
+                          {packages[selectedPlan].drinks.slice(24).map((drink, i) => (
+                            <motion.li 
+                              key={i} 
+                              className="flex items-center"
+                              initial={{ x: -10, opacity: 0 }}
+                              animate={{ x: 0, opacity: 1 }}
+                              transition={{ delay: i * 0.03 + 0.8 }}
+                            >
+                              <div className={`h-2.5 w-2.5 rotate-45 ${packages[selectedPlan].textColor} mr-3 flex-shrink-0`}></div>
+                              <span className="text-gray-100 text-base">{drink}</span>
+                            </motion.li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  // Layout para planos Essencial e Premium
+                  <>
+                    <div className="mb-6">
+                      <p className={`text-xl ${packages[selectedPlan].textColor} font-medium mb-4 border-b border-gray-800 pb-2`}>
+                        {packages[selectedPlan].drinks[0]}
+                      </p>
+                    </div>
+                    
+                    {packages[selectedPlan].title === "Premium" ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-2 mb-6">
+                        <div>
+                          <p className={`text-lg ${packages[selectedPlan].textColor} font-medium mb-3 border-b border-gray-800 pb-1`}>
+                            Clássicos
+                          </p>
+                          <ul className="space-y-3">
+                            {packages[selectedPlan].drinks.slice(1, 11).map((drink, i) => (
+                              <motion.li 
+                                key={i} 
+                                className="flex items-center"
+                                initial={{ x: -10, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: i * 0.03 }}
+                              >
+                                <div className={`h-2 w-2 rounded-full ${packages[selectedPlan].textColor} mr-3 flex-shrink-0`}></div>
+                                <span className="text-gray-100 text-base">{drink}</span>
+                              </motion.li>
+                            ))}
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <p className={`text-lg ${packages[selectedPlan].textColor} font-medium mb-3 border-b border-gray-800 pb-1`}>
+                            Especiais
+                          </p>
+                          <ul className="space-y-3">
+                            {packages[selectedPlan].drinks.slice(11).map((drink, i) => (
+                              <motion.li 
+                                key={i} 
+                                className="flex items-center"
+                                initial={{ x: -10, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                transition={{ delay: i * 0.03 + 0.3 }}
+                              >
+                                <div className={`h-2.5 w-2.5 rotate-45 ${packages[selectedPlan].textColor} mr-3 flex-shrink-0`}></div>
+                                <span className="text-gray-100 text-base">{drink}</span>
+                              </motion.li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    ) : (
+                      <ul className="space-y-3 mb-6">
+                        {packages[selectedPlan].drinks.slice(1).map((drink, i) => (
+                          <motion.li 
+                            key={i} 
+                            className="flex items-center"
+                            initial={{ x: -10, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            transition={{ delay: i * 0.05 }}
+                          >
+                            <div className={`h-2 w-2 rounded-full ${packages[selectedPlan].textColor} mr-3 flex-shrink-0`}></div>
+                            <span className="text-gray-100 text-base">{drink}</span>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                )}
+                
+                {/* Rodapé com info adicional */}
+                {packages[selectedPlan].title === "Luxo" && (
+                  <div 
+                    className="mt-6 p-4 rounded-lg" 
+                    style={{
+                      background: 'linear-gradient(to right, rgba(192, 132, 252, 0.05), rgba(192, 132, 252, 0.1))'
+                    }}
+                  >
+                    <div className="text-gray-300 text-sm">
+                      <p className="mt-2">
+                        No evento, são servidos uma média de 250 produtos entre caipirinhas, batidas, drinks especiais e shots.
+                      </p>
+                    </div>
+                  </div>
+                )}
+                
+                <motion.button 
+                  onClick={closeModal}
+                  className={`mt-8 w-full py-4 px-6 bg-gradient-to-r ${packages[selectedPlan].buttonColor} ${packages[selectedPlan].textButtonColor || 'text-white'} font-bold rounded-lg transition-all shadow-lg`}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.98 }}
+                  style={{
+                    boxShadow: packages[selectedPlan].textColor.includes('4ADE80')
+                      ? '0 8px 16px rgba(74, 222, 128, 0.3)'
+                      : '0 8px 16px rgba(192, 132, 252, 0.3)'
+                  }}
+                >
+                  Fechar
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}
