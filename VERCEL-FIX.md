@@ -1,10 +1,12 @@
 # 🔧 CORREÇÃO FINAL VERCEL
 
 ## ❌ Erro Atual:
-`Function Runtimes must have a valid version, for example 'now-php@1.0.0'`
+`Found invalid Node.js Version: "22.x". Please set Node.js Version to 18.x`
 
-## ✅ Correção:
-Especificada versão correta do runtime Node.js: `@vercel/node@3.0.0`
+## ✅ Correções:
+- Runtime corrigido para: `nodejs18.x`
+- Criado arquivo `.nvmrc` com versão 18
+- Configuração compatível com Vercel
 
 ## 📋 Configuração Final vercel.json:
 ```json
@@ -14,10 +16,15 @@ Especificada versão correta do runtime Node.js: `@vercel/node@3.0.0`
   "framework": "vite",
   "functions": {
     "api/index.ts": {
-      "runtime": "@vercel/node@3.0.0"
+      "runtime": "nodejs18.x"
     }
   }
 }
+```
+
+## 📄 Arquivo .nvmrc criado:
+```
+18
 ```
 
 ## 🚀 Deploy Final:
