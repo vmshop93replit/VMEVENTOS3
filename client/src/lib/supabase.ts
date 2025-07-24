@@ -1,26 +1,28 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Configuração do Supabase - usando as mesmas credenciais do backend
+// Configuração do Supabase - usando service role key para acesso completo
 const SUPABASE_URL = "https://vjjcffkkszsrcvdxxgxy.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqamNmZmtrc3pzcmN2ZHh4Z3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMzMjA5OTEsImV4cCI6MjA2ODg5Njk5MX0.MU-5bR2WI5mKpeFD7Vz6fYXjk8bgdWAcVZlrcZqZ8E4";
+const SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqamNmZmtrc3pzcmN2ZHh4Z3h5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzMyMDk5MSwiZXhwIjoyMDY4ODk2OTkxfQ.zuToNduxxxZbMumsSo3yfcJczKZEMpa3wVkeYVlBw_A";
 
-// Cliente Supabase para o frontend
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Cliente Supabase para o frontend usando service role
+export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
 // Funções para interagir com o Supabase diretamente
 export const supabaseAPI = {
   // Buscar todos os contatos
   async getContacts() {
+    console.log('🔍 Buscando contatos do Supabase...');
     const { data, error } = await supabase
       .from('contacts')
       .select('*')
       .order('created_at', { ascending: false });
     
     if (error) {
-      console.error('Erro ao buscar contatos:', error);
+      console.error('❌ Erro ao buscar contatos:', error);
       return [];
     }
     
+    console.log(`✅ ${data?.length || 0} contatos encontrados`);
     return data || [];
   },
 
