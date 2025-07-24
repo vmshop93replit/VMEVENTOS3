@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Configuração do Supabase - usando service role key para acesso completo
-const SUPABASE_URL = "https://vjjcffkkszsrcvdxxgxy.supabase.co";
-const SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqamNmZmtrc3pzcmN2ZHh4Z3h5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzMyMDk5MSwiZXhwIjoyMDY4ODk2OTkxfQ.zuToNduxxxZbMumsSo3yfcJczKZEMpa3wVkeYVlBw_A";
+// Configuração do Supabase - usando variáveis de ambiente para deploy
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "https://vjjcffkkszsrcvdxxgxy.supabase.co";
+const SUPABASE_SERVICE_KEY = import.meta.env.VITE_SUPABASE_SERVICE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZqamNmZmtrc3pzcmN2ZHh4Z3h5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzMyMDk5MSwiZXhwIjoyMDY4ODk2OTkxfQ.zuToNduxxxZbMumsSo3yfcJczKZEMpa3wVkeYVlBw_A";
 
 // Cliente Supabase para o frontend usando service role
 export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
@@ -56,7 +56,10 @@ export const supabaseAPI = {
       if (error) {
         console.log('⚠️ Usuário não encontrado no Supabase, usando fallback');
         // Fallback para credenciais padrão
-        if (username === 'admvini' && password === '939393') {
+        const adminUser = import.meta.env.VITE_ADMIN_USERNAME || 'admvini';
+        const adminPass = import.meta.env.VITE_ADMIN_PASSWORD || '939393';
+        
+        if (username === adminUser && password === adminPass) {
           const user = { id: 1, username: 'admvini' };
           localStorage.setItem('vm-eventos-user', JSON.stringify(user));
           console.log('✅ Fallback: Usuário salvo no localStorage:', user);
@@ -67,8 +70,11 @@ export const supabaseAPI = {
       
       console.log('✅ Usuário encontrado no Supabase:', { id: data.id, username: data.username });
       
-      // Verificar senha
-      if (username === 'admvini' && password === '939393') {
+      // Verificar senha usando variáveis de ambiente
+      const adminUser = import.meta.env.VITE_ADMIN_USERNAME || 'admvini';
+      const adminPass = import.meta.env.VITE_ADMIN_PASSWORD || '939393';
+      
+      if (username === adminUser && password === adminPass) {
         const user = { id: data.id, username: data.username };
         localStorage.setItem('vm-eventos-user', JSON.stringify(user));
         console.log('✅ Login bem-sucedido - Usuário salvo no localStorage:', user);
@@ -80,7 +86,10 @@ export const supabaseAPI = {
     } catch (error) {
       console.error('❌ Erro completo no login:', error);
       // Último fallback
-      if (username === 'admvini' && password === '939393') {
+      const adminUser = import.meta.env.VITE_ADMIN_USERNAME || 'admvini';
+      const adminPass = import.meta.env.VITE_ADMIN_PASSWORD || '939393';
+      
+      if (username === adminUser && password === adminPass) {
         const user = { id: 1, username: 'admvini' };
         localStorage.setItem('vm-eventos-user', JSON.stringify(user));
         console.log('✅ Fallback final: Usuário salvo no localStorage:', user);
