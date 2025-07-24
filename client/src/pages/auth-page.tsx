@@ -35,23 +35,37 @@ export default function AuthPage() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginFormValues) => {
+      console.log('🔄 Enviando credenciais:', credentials);
       const res = await apiRequest("POST", "/api/login", credentials);
+      console.log('📡 Resposta do login:', res.status);
+      
       if (!res.ok) {
+        const errorText = await res.text();
+        console.error('❌ Erro na resposta:', errorText);
         throw new Error("Credenciais inválidas");
       }
-      return await res.json();
+      const result = await res.json();
+      console.log('✅ Login bem-sucedido:', result);
+      return result;
     },
-    onSuccess: () => {
-      // Invalidar cache e redirecionar imediatamente
+    onSuccess: (data) => {
+      console.log('🎉 Login mutation success:', data);
+      // Invalidar cache para recarregar dados de usuário
       queryClient.invalidateQueries({ queryKey: ["/api/user"] });
-      // Forçar recarregamento da página para garantir que a autenticação seja aplicada
-      window.location.href = "/admin";
+      
+      // Aguardar um pouco antes de redirecionar
+      setTimeout(() => {
+        console.log('🔄 Redirecionando para /admin');
+        window.location.href = "/admin";
+      }, 500);
+      
       toast({
         title: "Login realizado com sucesso",
         description: "Bem-vindo ao painel administrativo",
       });
     },
     onError: (error: any) => {
+      console.error('❌ Login mutation error:', error);
       toast({
         title: "Erro ao fazer login",
         description: error.message || "Verifique suas credenciais e tente novamente",

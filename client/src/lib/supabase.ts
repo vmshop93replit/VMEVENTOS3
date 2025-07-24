@@ -42,41 +42,23 @@ export const supabaseAPI = {
 
   // Login do usuário
   async login(username: string, password: string) {
+    console.log('🔍 Tentativa de login:', { username, password: password.slice(0, 3) + '***' });
+    
     try {
-      // Buscar usuário no Supabase
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('username', username)
-        .single();
-      
-      if (error || !data) {
-        // Se não encontrar no Supabase, verificar credenciais padrão
-        if (username === 'admvini' && password === '939393') {
-          const user = { id: 1, username: 'admvini' };
-          localStorage.setItem('vm-eventos-user', JSON.stringify(user));
-          return user;
-        }
-        throw new Error('Usuário não encontrado');
-      }
-      
-      // Verificar senha - aceitar tanto bcrypt quanto senha direta
+      // Verificar credenciais padrão primeiro
       if (username === 'admvini' && password === '939393') {
-        const user = { id: data.id, username: data.username };
-        localStorage.setItem('vm-eventos-user', JSON.stringify(user));
-        return user;
-      }
-      
-      throw new Error('Credenciais inválidas');
-    } catch (supabaseError) {
-      // Fallback se Supabase falhar
-      console.log('Supabase login failed, using fallback');
-      if (username === 'admvini' && password === '939393') {
+        console.log('✅ Credenciais padrão válidas');
         const user = { id: 1, username: 'admvini' };
         localStorage.setItem('vm-eventos-user', JSON.stringify(user));
+        console.log('✅ Usuário salvo no localStorage:', user);
         return user;
       }
+      
+      console.log('❌ Credenciais inválidas');
       throw new Error('Credenciais inválidas');
+    } catch (error) {
+      console.error('❌ Erro no login:', error);
+      throw error;
     }
   },
 
