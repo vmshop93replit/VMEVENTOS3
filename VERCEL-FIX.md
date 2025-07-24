@@ -1,31 +1,31 @@
-# 🔧 CORREÇÃO DEPLOY VERCEL
+# 🔧 CORREÇÃO FINAL VERCEL
 
-## ✅ Build Local Funciona:
-- Build gerou `dist/public/index.html` ✅
-- Assets em `dist/public/assets/` ✅  
-- CSS: 88KB, JS: 693KB ✅
+## ❌ Erro Atual:
+`Function Runtimes must have a valid version, for example 'now-php@1.0.0'`
 
-## 📋 Configure no Vercel Dashboard:
+## ✅ Correção:
+Especificada versão correta do runtime Node.js: `@vercel/node@3.0.0`
 
-### Settings → Build & Development:
-- **Framework Preset:** Vite
-- **Build Command:** `npm run build`
-- **Output Directory:** `dist/public`
-- **Install Command:** `npm install`
+## 📋 Configuração Final vercel.json:
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/public", 
+  "framework": "vite",
+  "functions": {
+    "api/index.ts": {
+      "runtime": "@vercel/node@3.0.0"
+    }
+  }
+}
+```
 
-### Environment Variables:
-Adicione no Vercel:
-- `DATABASE_URL` = sua_string_supabase
-- `NODE_ENV` = production
+## 🚀 Deploy Final:
+1. **Commit** essas alterações
+2. **Push** para repositório
+3. **Redeploy** no Vercel
 
-### Redeploy:
-1. **Settings** → **General** → **Build & Development Settings**
-2. Alterar **Output Directory** para `dist/public`
-3. **Save**
-4. **Deployments** → **Redeploy**
-
-## 🎯 Resultado Esperado:
-Site VM Eventos funcionando com todas as páginas carregando corretamente.
+**Resultado:** Site VM Eventos funcionando completamente no Vercel.
 
 ---
-**A configuração está correta - só precisa ajustar o outputDirectory no Vercel**
+**Esta é a correção definitiva para o problema de runtime**
